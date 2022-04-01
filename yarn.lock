@@ -1830,13 +1830,13 @@
   resolved "https://registry.yarnpkg.com/@react-native-community/eslint-plugin/-/eslint-plugin-1.1.0.tgz#e42b1bef12d2415411519fd528e64b593b1363dc"
   integrity sha512-W/J0fNYVO01tioHjvYWQ9m6RgndVtbElzYozBq1ZPrHO/iCzlqoySHl4gO/fpCl9QEFjvJfjPgtPMTMlsoq5DQ==
 
-"@release-it/conventional-changelog@^2.0.0":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@release-it/conventional-changelog/-/conventional-changelog-2.0.1.tgz#bdd52ad3ecc0d6e39d637592d6ea2bd6d28e5ecb"
-  integrity sha512-q67D3Jod935kZt6wThsDeOmhY+RWYPMY7nYyl0YxiXK8vVZzD+9z957fXGz+8Uk3iugmgDaucht7VxTaZlu6nA==
+"@release-it/conventional-changelog@^4.2.2":
+  version "4.2.2"
+  resolved "https://registry.yarnpkg.com/@release-it/conventional-changelog/-/conventional-changelog-4.2.2.tgz#924e96f2f1de96974a5e7ae239ccfd3a9302af82"
+  integrity sha512-cbpfMSKTt8VtyltNls6Kt0WXIRmgILNpF1nqGE2oe3acs286Brrb5WFGyPhYR8XUy0nVsnjG1zmUPP6n0Xd6XA==
   dependencies:
     concat-stream "^2.0.0"
-    conventional-changelog "^3.1.24"
+    conventional-changelog "^3.1.25"
     conventional-recommended-bump "^6.1.0"
     prepend-file "^2.0.0"
 
@@ -3458,7 +3458,7 @@ conventional-changelog-writer@^5.0.0:
     split "^1.0.0"
     through2 "^4.0.0"
 
-conventional-changelog@^3.1.24:
+conventional-changelog@^3.1.25:
   version "3.1.25"
   resolved "https://registry.yarnpkg.com/conventional-changelog/-/conventional-changelog-3.1.25.tgz#3e227a37d15684f5aa1fb52222a6e9e2536ccaff"
   integrity sha512-ryhi3fd1mKf3fSjbLXOfK2D06YwKNic1nC9mWqybBHdObPd8KJ2vjaXZfYj1U23t+V8T8n0d7gwnc9XbIdFbyQ==
@@ -8209,7 +8209,7 @@ regjsparser@^0.8.2:
   dependencies:
     jsesc "~0.5.0"
 
-release-it@^14.2.2:
+release-it@^14.14.0:
   version "14.14.0"
   resolved "https://registry.yarnpkg.com/release-it/-/release-it-14.14.0.tgz#3eaa7319eeb7914bd4012fba43064b4085e4a266"
   integrity sha512-HOkRYiLHevQvKIgSBSKs+2FJboPEWced5S8lvy4PL6BdPrEKDW7nKkL8Whs6Bc+d1Mvz4kzoxfK2jOmritzq3w==
