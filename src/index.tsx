@@ -19,9 +19,25 @@ const AlarmModule = (
       )
 ) as AlarmModuleInterface;
 export interface AlarmModuleInterface {
-  multiply(a: number, b: number): Promise<number>;
+  setAlarmClock(taskName: string, isoDateTime: string): void;
+  setAndAllowWhileIdle(
+    taskName: string,
+    isoDateTime: string,
+    wakeup: boolean,
+  ): void;
+  setExactAndAllowWhileIdle(
+    taskName: string,
+    isoDateTime: string,
+    wakeup: boolean,
+  ): void;
+  setExact(taskName: string, isoDateTime: string, wakeup: boolean): void;
 }
 
-export const {multiply} = AlarmModule;
+export const {
+  setAlarmClock,
+  setAndAllowWhileIdle,
+  setExact,
+  setExactAndAllowWhileIdle,
+} = AlarmModule;
 
 export default AlarmModule;
