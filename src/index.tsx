@@ -20,7 +20,7 @@ const AlarmModule = (
       )
 ) as AlarmModuleInterface;
 
-export interface AlarmModuleInterface {
+interface AlarmModuleInterface {
   setAlarm(
     taskName: string,
     isoDateTime: string,
@@ -47,7 +47,7 @@ export type AlarmOptions = {
   /** **ANDROID:** should this task be allowed to run in foreground ? */
   allowedInForeground?: boolean;
   /** Extra string to pass to task as `extra` prop. (can be used for passing stringified json) */
-  extra: string;
+  extra?: string;
 };
 
 export function setAlarm(options: AlarmOptions): void {
