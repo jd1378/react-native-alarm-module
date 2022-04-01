@@ -15,19 +15,46 @@ yarn install react-native-alarm-module
 ## Usage
 
 ```js
-import { setAlarm } from "react-native-alarm-module";
+import { setExactAndAllowWhileIdle } from 'react-native-alarm-module';
 
-// ...
+export default function App() {
+  const date = Date.now() + 10 * 1000;
+
+  const setAlarm = () => {
+    setExactAndAllowWhileIdle(
+      // Your task class full path
+      'com.example.reactnativealarmmodule.ShowToastTask',
+      // the time in iso format.
+      new Date(date).toISOString(),
+      // wake up device (RTC_WAKEUP)
+      true,
+    );
+  };
+
+  return (
+    <View style={styles.container}>
+      <Button onPress={setAlarm} title="Set Alarm in 10 seconds" />
+    </View>
+  );
+}
 
 ```
 
 ## Notes
 
-To set an alarm with `wakeup: true` you havre to add the following to your `AndroidManifest.xml` file:
+### RTC_WAKEUP
+
+To set an alarm with `wakeup: true` you have to add the following to your `AndroidManifest.xml` file:
 
 ```xml
 <uses-permission android:name="android.permission.WAKE_LOCK" />
 ```
+
+Otherwise your app will crash
+
+### Rebooting
+
+This library does not save and restore your scheduled alarm if the device is rebooted. you have to save them yourself before scheduling them with this library and setup them again on reboot using the `android.intent.action.BOOT_COMPLETED` broadcast and the related permission.
 
 ## Contributing
 
