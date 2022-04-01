@@ -1,4 +1,5 @@
 import {NativeModules, Platform} from 'react-native';
+import {required} from '@/utils';
 
 const LINKING_ERROR =
   `The package 'react-native-alarm-module' doesn't seem to be linked. Make sure: \n\n` +
@@ -48,21 +49,6 @@ export type AlarmOptions = {
   /** Extra string to pass to task as `extra` prop. (can be used for passing stringified json) */
   extra: string;
 };
-
-export function required(obj: unknown, key: string) {
-  if (!obj) {
-    throw new Error(
-      "Object is undefined. cannot access '${key}' on undefined.",
-    );
-  }
-
-  if (
-    !(obj as Record<string, unknown>)[key] &&
-    (obj as Record<string, unknown>)[key] !== false
-  ) {
-    throw new Error("'${key}' is required.");
-  }
-}
 
 export function setAlarm(options: AlarmOptions): void {
   if (!options) {
