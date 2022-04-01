@@ -21,6 +21,14 @@ import { setAlarm } from "react-native-alarm-module";
 
 ```
 
+## Notes
+
+To set an alarm with `wakeup: true` you havre to add the following to your `AndroidManifest.xml` file:
+
+```xml
+<uses-permission android:name="android.permission.WAKE_LOCK" />
+```
+
 ## Contributing
 
 See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
