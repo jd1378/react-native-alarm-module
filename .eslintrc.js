@@ -42,6 +42,8 @@ module.exports = {
     'no-multiple-empty-lines': ['error', {max: 2, maxEOF: 0}],
     'no-unused-vars': 'off',
     '@typescript-eslint/no-unused-vars': ['error'],
+    'react/jsx-uses-react': 'off',
+    'react/react-in-jsx-scope': 'off',
   },
   overrides: [
     {
