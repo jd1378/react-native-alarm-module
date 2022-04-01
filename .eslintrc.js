@@ -40,6 +40,8 @@ module.exports = {
     ],
     'object-curly-spacing': ['error', 'never'],
     'no-multiple-empty-lines': ['error', {max: 2, maxEOF: 0}],
+    'no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': ['error'],
   },
   overrides: [
     {
