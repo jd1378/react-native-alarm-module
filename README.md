@@ -13,7 +13,7 @@ npm install react-native-alarm-module
 ```
 
 ```sh
-yarn install react-native-alarm-module
+yarn add react-native-alarm-module
 ```
 
 ## Usage
