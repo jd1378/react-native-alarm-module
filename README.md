@@ -20,31 +20,45 @@ yarn add react-native-alarm-module
 
 ```js
 // setAlarmClock, setExact, setAndAllowWhileIdle, setExactAndAllowWhileIdle
-import { setExactAndAllowWhileIdle, cancelAlarm } from 'react-native-alarm-module';
+import {setAlarm, cancelAlarm} from 'react-native-alarm-module';
+import {View, Button, ToastAndroid} from 'react-native';
 
 export default function App() {
-  const [lastDate, setLastDate] = useState(new Date(Date.now() + 10 * 1000));
+  const [lastDate, setLastDate] = useState(new Date(Date.now() + 5 * 1000));
 
-  const setAlarm = useCallback(() => {
-    const newDate = new Date(Date.now() + 10 * 1000);
+  const setAlarmOnPress = useCallback(() => {
+    const newDate = new Date(Date.now() + 5 * 1000);
     setLastDate(newDate);
-    setExactAndAllowWhileIdle(
-      'com.example.reactnativealarmmodule.ShowToastTask',
-      newDate.toISOString(),
-      true,
+
+    setAlarm({
+      taskName: 'ShowToastTask', // required
+      isoDateTime: newDate.toISOString(), // required
+      type: 'setExactAndAllowWhileIdle', // optional
+      allowedInForeground: true, // optional 
+      wakeup: true, // optional
+      extra: 'something extra', // optional
+    });
+
+    ToastAndroid.show(
+      `alarm set for ${newDate.toISOString()}`,
+      ToastAndroid.SHORT,
     );
   }, []);
 
   const cancel = useCallback(() => {
-    cancelAlarm(
-      'com.example.reactnativealarmmodule.ShowToastTask',
-      lastDate.toISOString(),
+    cancelAlarm({
+      taskName: 'ShowToastTask',
+      isoDateTime: lastDate.toISOString(),
+    });
+    ToastAndroid.show(
+      `alarm cancelled for ${lastDate.toISOString()}`,
+      ToastAndroid.SHORT,
     );
   }, [lastDate]);
 
   return (
-    <View style={styles.container}>
-      <Button onPress={setAlarm} title="SetAlarm in 10 seconds" />
+    <View>
+      <Button onPress={setAlarmOnPress} title="Set Alarm in 5 seconds" />
       <Button onPress={cancel} title="Cancel last alarm" />
     </View>
   );
@@ -56,7 +70,7 @@ export default function App() {
 
 ### Canceling an alarm
 
-`cancelAlarm` Uses your task class path and the ISO time the alarm was set to fire to cancel the alarm.
+`cancelAlarm` Uses your task name and the ISO time the alarm was set to fire to cancel the alarm.
 it uses the time in seconds without the first digit as the request code under the hood to create a pending intent to cancel the alarm.
 
 ### RTC_WAKEUP

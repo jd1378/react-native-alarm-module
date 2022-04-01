@@ -28,68 +28,99 @@ public class AlarmModuleModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void setAlarmClock(String taskName, String isoDateTime) {
-    long timeEpochMilli = OffsetDateTime.parse(isoDateTime).toInstant().toEpochMilli();
-    AlarmManagerCompat.setAlarmClock(
-        this.getAlarmManager(),
-        timeEpochMilli,
-        null,
-        this.createPendingIntentForAlarm(taskName, false, timeEpochMilli));
-  }
+  public void setAlarm(
+      String taskName,
+      String isoDateTime,
+      String type,
+      boolean wakeup,
+      boolean keepAwake,
+      boolean allowedInForeground,
+      String extra) {
 
-  @ReactMethod
-  public void setAndAllowWhileIdle(String taskName, String isoDateTime, boolean wakeup) {
-    long timeEpochMilli = OffsetDateTime.parse(isoDateTime).toInstant().toEpochMilli();
-    AlarmManagerCompat.setAndAllowWhileIdle(
-        this.getAlarmManager(),
-        wakeup ? AlarmManager.RTC_WAKEUP : AlarmManager.RTC,
-        timeEpochMilli,
-        this.createPendingIntentForAlarm(taskName, wakeup, timeEpochMilli));
-  }
+    if (extra == null) {
+      extra = "";
+    }
 
-  @ReactMethod
-  public void setExactAndAllowWhileIdle(String taskName, String isoDateTime, boolean wakeup) {
     long timeEpochMilli = OffsetDateTime.parse(isoDateTime).toInstant().toEpochMilli();
-    AlarmManagerCompat.setExactAndAllowWhileIdle(
-        this.getAlarmManager(),
-        wakeup ? AlarmManager.RTC_WAKEUP : AlarmManager.RTC,
-        timeEpochMilli,
-        this.createPendingIntentForAlarm(taskName, wakeup, timeEpochMilli));
-  }
+    AlarmManager alarmManager = this.getAlarmManager();
 
-  @ReactMethod
-  public void setExact(String taskName, String isoDateTime, boolean wakeup) {
-    long timeEpochMilli = OffsetDateTime.parse(isoDateTime).toInstant().toEpochMilli();
-    AlarmManagerCompat.setExact(
-        this.getAlarmManager(),
-        wakeup ? AlarmManager.RTC_WAKEUP : AlarmManager.RTC,
-        timeEpochMilli,
-        this.createPendingIntentForAlarm(taskName, wakeup, timeEpochMilli));
+    PendingIntent pendingIntent =
+        this.createPendingIntentForAlarm(
+            taskName, timeEpochMilli, wakeup, keepAwake, allowedInForeground, extra);
+
+    if (type == null) {
+      type = "setAndAllowWhileIdle";
+    }
+
+    switch (type) {
+      case "setExact":
+        AlarmManagerCompat.setExact(
+            alarmManager,
+            wakeup ? AlarmManager.RTC_WAKEUP : AlarmManager.RTC,
+            timeEpochMilli,
+            pendingIntent);
+      case "setExactAndAllowWhileIdle":
+        AlarmManagerCompat.setExactAndAllowWhileIdle(
+            alarmManager,
+            wakeup ? AlarmManager.RTC_WAKEUP : AlarmManager.RTC,
+            timeEpochMilli,
+            pendingIntent);
+      default:
+      case "setAndAllowWhileIdle":
+        AlarmManagerCompat.setAndAllowWhileIdle(
+            alarmManager,
+            wakeup ? AlarmManager.RTC_WAKEUP : AlarmManager.RTC,
+            timeEpochMilli,
+            pendingIntent);
+        break;
+    }
   }
 
   @ReactMethod
   public void cancelAlarm(String taskName, String isoDateTime) {
     long timeEpochMilli = OffsetDateTime.parse(isoDateTime).toInstant().toEpochMilli();
-    PendingIntent pi = this.createPendingIntentForAlarm(taskName, false, timeEpochMilli);
-    this.getAlarmManager().cancel(pi);
+    String fireDate = Long.toString(timeEpochMilli);
+    int requestCode = this.createRequestCode(fireDate);
+    Intent intent = new Intent(this.getReactApplicationContext(), AlarmReceiver.class);
+
+    this.getAlarmManager()
+        .cancel(
+            this.createPendingIntentForAlarm(taskName, timeEpochMilli, false, false, false, ""));
   }
 
   private PendingIntent createPendingIntentForAlarm(
-      String taskName, boolean wakeup, long timeEpochMilli) {
+      String taskName,
+      long timeEpochMilli,
+      boolean wakeup,
+      boolean keepAwake,
+      boolean allowedInForeground,
+      String extra) {
     ReactApplicationContext context = this.getReactApplicationContext();
-    String fire_date = Long.toString(timeEpochMilli);
+    String fireDate = Long.toString(timeEpochMilli);
 
     Intent intent = new Intent(context, AlarmReceiver.class);
-    intent.setAction("launch_task");
-    intent.putExtra("task_name", taskName);
+    intent.setAction("launchTask");
+    intent.putExtra("taskName", taskName);
     intent.putExtra("wakeup", wakeup);
-    intent.putExtra("fire_date", fire_date);
+    intent.putExtra("keepAwake", keepAwake);
+    intent.putExtra("allowedInForeground", allowedInForeground);
+    intent.putExtra("fireDate", fireDate);
+    intent.putExtra("extra", extra);
 
-    int requestCode = Integer.parseInt(fire_date.substring(1, fire_date.length() - 3));
+    int requestCode = this.createRequestCode(fireDate);
+    int mutabilityFlag = PendingIntent.FLAG_ONE_SHOT;
+    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+      mutabilityFlag = PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_ONE_SHOT;
+    }
+    return PendingIntent.getBroadcast(context, requestCode, intent, mutabilityFlag);
+  }
 
-    PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, 0);
-
-    return pendingIntent;
+  private int createRequestCode(String timeMillisStr) {
+    try {
+      return Integer.parseInt(timeMillisStr.substring(1, timeMillisStr.length() - 3));
+    } catch (NumberFormatException e) {
+      return 0;
+    }
   }
 
   private AlarmManager getAlarmManager() {

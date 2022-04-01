@@ -6,5 +6,7 @@
       android:enabled="true"
       android:exported="true">
     </receiver>
+
+    <service android:name=".UniversalService" />
   </application>
 </manifest>
