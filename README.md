@@ -2,6 +2,10 @@
 
 A native module for scheduling alarms. the main aim is to execute a headless js task from a set alarm. this was needed for executing a time critical task.
 
+## Supported Platforms
+
+- Android (Min. SDK 21)
+
 ## Installation
 
 ```sh
@@ -15,6 +19,7 @@ yarn install react-native-alarm-module
 ## Usage
 
 ```js
+// setAlarmClock, setExact, setAndAllowWhileIdle, setExactAndAllowWhileIdle
 import { setExactAndAllowWhileIdle } from 'react-native-alarm-module';
 
 export default function App() {
