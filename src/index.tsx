@@ -31,6 +31,7 @@ export interface AlarmModuleInterface {
     isoDateTime: string,
     wakeup: boolean,
   ): void;
+  cancelAlarm(taskName: string, isoDateTime: string): void;
 }
 
 export const {
@@ -38,6 +39,7 @@ export const {
   setAndAllowWhileIdle,
   setExact,
   setExactAndAllowWhileIdle,
+  cancelAlarm,
 } = AlarmModule;
 
 export default AlarmModule;

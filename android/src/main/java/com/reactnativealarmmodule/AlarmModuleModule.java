@@ -29,53 +29,65 @@ public class AlarmModuleModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void setAlarmClock(String taskName, String isoDateTime) {
-
+    long timeEpochMilli = OffsetDateTime.parse(isoDateTime).toInstant().toEpochMilli();
     AlarmManagerCompat.setAlarmClock(
         this.getAlarmManager(),
-        OffsetDateTime.parse(isoDateTime).toInstant().toEpochMilli(),
+        timeEpochMilli,
         null,
-        this.createPendingIntentForAlarm(taskName, false));
+        this.createPendingIntentForAlarm(taskName, false, timeEpochMilli));
   }
 
   @ReactMethod
   public void setAndAllowWhileIdle(String taskName, String isoDateTime, boolean wakeup) {
-
+    long timeEpochMilli = OffsetDateTime.parse(isoDateTime).toInstant().toEpochMilli();
     AlarmManagerCompat.setAndAllowWhileIdle(
         this.getAlarmManager(),
         wakeup ? AlarmManager.RTC_WAKEUP : AlarmManager.RTC,
-        OffsetDateTime.parse(isoDateTime).toInstant().toEpochMilli(),
-        this.createPendingIntentForAlarm(taskName, wakeup));
+        timeEpochMilli,
+        this.createPendingIntentForAlarm(taskName, wakeup, timeEpochMilli));
   }
 
   @ReactMethod
   public void setExactAndAllowWhileIdle(String taskName, String isoDateTime, boolean wakeup) {
-
+    long timeEpochMilli = OffsetDateTime.parse(isoDateTime).toInstant().toEpochMilli();
     AlarmManagerCompat.setExactAndAllowWhileIdle(
         this.getAlarmManager(),
         wakeup ? AlarmManager.RTC_WAKEUP : AlarmManager.RTC,
-        OffsetDateTime.parse(isoDateTime).toInstant().toEpochMilli(),
-        this.createPendingIntentForAlarm(taskName, wakeup));
+        timeEpochMilli,
+        this.createPendingIntentForAlarm(taskName, wakeup, timeEpochMilli));
   }
 
   @ReactMethod
   public void setExact(String taskName, String isoDateTime, boolean wakeup) {
-
+    long timeEpochMilli = OffsetDateTime.parse(isoDateTime).toInstant().toEpochMilli();
     AlarmManagerCompat.setExact(
         this.getAlarmManager(),
         wakeup ? AlarmManager.RTC_WAKEUP : AlarmManager.RTC,
-        OffsetDateTime.parse(isoDateTime).toInstant().toEpochMilli(),
-        this.createPendingIntentForAlarm(taskName, wakeup));
+        timeEpochMilli,
+        this.createPendingIntentForAlarm(taskName, wakeup, timeEpochMilli));
   }
 
-  private PendingIntent createPendingIntentForAlarm(String taskName, boolean wakeup) {
+  @ReactMethod
+  public void cancelAlarm(String taskName, String isoDateTime) {
+    long timeEpochMilli = OffsetDateTime.parse(isoDateTime).toInstant().toEpochMilli();
+    PendingIntent pi = this.createPendingIntentForAlarm(taskName, false, timeEpochMilli);
+    this.getAlarmManager().cancel(pi);
+  }
+
+  private PendingIntent createPendingIntentForAlarm(
+      String taskName, boolean wakeup, long timeEpochMilli) {
     ReactApplicationContext context = this.getReactApplicationContext();
+    String fire_date = Long.toString(timeEpochMilli);
 
     Intent intent = new Intent(context, AlarmReceiver.class);
     intent.setAction("launch_task");
     intent.putExtra("task_name", taskName);
     intent.putExtra("wakeup", wakeup);
+    intent.putExtra("fire_date", fire_date);
 
-    PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+    int requestCode = Integer.parseInt(fire_date.substring(1, fire_date.length() - 3));
+
+    PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, 0);
 
     return pendingIntent;
   }
