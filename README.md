@@ -20,25 +20,32 @@ yarn add react-native-alarm-module
 
 ```js
 // setAlarmClock, setExact, setAndAllowWhileIdle, setExactAndAllowWhileIdle
-import { setExactAndAllowWhileIdle } from 'react-native-alarm-module';
+import { setExactAndAllowWhileIdle, cancelAlarm } from 'react-native-alarm-module';
 
 export default function App() {
-  const date = Date.now() + 10 * 1000;
+  const [lastDate, setLastDate] = useState(new Date(Date.now() + 10 * 1000));
 
-  const setAlarm = () => {
+  const setAlarm = useCallback(() => {
+    const newDate = new Date(Date.now() + 10 * 1000);
+    setLastDate(newDate);
     setExactAndAllowWhileIdle(
-      // Your task class full path
       'com.example.reactnativealarmmodule.ShowToastTask',
-      // the time in iso format.
-      new Date(date).toISOString(),
-      // wake up device (RTC_WAKEUP)
+      newDate.toISOString(),
       true,
     );
-  };
+  }, []);
+
+  const cancel = useCallback(() => {
+    cancelAlarm(
+      'com.example.reactnativealarmmodule.ShowToastTask',
+      lastDate.toISOString(),
+    );
+  }, [lastDate]);
 
   return (
     <View style={styles.container}>
-      <Button onPress={setAlarm} title="Set Alarm in 10 seconds" />
+      <Button onPress={setAlarm} title="SetAlarm in 10 seconds" />
+      <Button onPress={cancel} title="Cancel last alarm" />
     </View>
   );
 }
@@ -47,15 +54,18 @@ export default function App() {
 
 ## Notes
 
+### Canceling an alarm
+
+`cancelAlarm` Uses your task class path and the ISO time the alarm was set to fire to cancel the alarm.
+it uses the time in seconds without the first digit as the request code under the hood to create a pending intent to cancel the alarm.
+
 ### RTC_WAKEUP
 
-To set an alarm with `wakeup: true` you have to add the following to your `AndroidManifest.xml` file:
+To set an alarm with `wakeup: true` you have to add the following to your `AndroidManifest.xml` file, Otherwise your app will crash:
 
 ```xml
 <uses-permission android:name="android.permission.WAKE_LOCK" />
 ```
-
-Otherwise your app will crash
 
 ### Rebooting
 
