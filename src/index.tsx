@@ -6,17 +6,22 @@ const LINKING_ERROR =
   '- You rebuilt the app after installing the package\n' +
   '- You are not using Expo managed workflow\n';
 
-const AlarmModule = NativeModules.AlarmModule
-  ? NativeModules.AlarmModule
-  : new Proxy(
-      {},
-      {
-        get() {
-          throw new Error(LINKING_ERROR);
+const AlarmModule = (
+  NativeModules.AlarmModule
+    ? NativeModules.AlarmModule
+    : new Proxy(
+        {},
+        {
+          get() {
+            throw new Error(LINKING_ERROR);
+          },
         },
-      },
-    );
-
-export function multiply(a: number, b: number): Promise<number> {
-  return AlarmModule.multiply(a, b);
+      )
+) as AlarmModuleInterface;
+export interface AlarmModuleInterface {
+  multiply(a: number, b: number): Promise<number>;
 }
+
+export const {multiply} = AlarmModule;
+
+export default AlarmModule;
