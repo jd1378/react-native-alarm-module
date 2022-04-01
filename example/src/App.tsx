@@ -1,7 +1,7 @@
 import * as React from 'react';
 
-import { StyleSheet, View, Text } from 'react-native';
-import { multiply } from 'react-native-alarm-module';
+import {StyleSheet, View, Text} from 'react-native';
+import {multiply} from 'react-native-alarm-module';
 
 export default function App() {
   const [result, setResult] = React.useState<number | undefined>();

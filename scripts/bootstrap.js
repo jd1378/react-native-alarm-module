@@ -1,6 +1,6 @@
+const child_process = require('child_process');
 const os = require('os');
 const path = require('path');
-const child_process = require('child_process');
 
 const root = path.resolve(__dirname, '..');
 const args = process.argv.slice(2);
@@ -12,7 +12,7 @@ const options = {
 };
 
 if (os.type() === 'Windows_NT') {
-  options.shell = true
+  options.shell = true;
 }
 
 let result;
