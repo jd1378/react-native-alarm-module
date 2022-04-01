@@ -1,6 +1,6 @@
 # react-native-alarm-module
 
-schedules alarms
+A native module for scheduling alarms. the main aim is to execute a headless js task from a set alarm. this was needed for executing a time critical task.
 
 ## Installation
 
@@ -8,14 +8,17 @@ schedules alarms
 npm install react-native-alarm-module
 ```
 
+```sh
+yarn install react-native-alarm-module
+```
+
 ## Usage
 
 ```js
-import { multiply } from "react-native-alarm-module";
+import { setAlarm } from "react-native-alarm-module";
 
 // ...
 
-const result = await multiply(3, 7);
 ```
 
 ## Contributing
