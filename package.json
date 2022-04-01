@@ -1,6 +1,6 @@
 {
   "name": "react-native-alarm-module",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "schedules alarms",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
