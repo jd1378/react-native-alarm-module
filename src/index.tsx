@@ -1,5 +1,5 @@
 import {NativeModules, Platform} from 'react-native';
-import {required} from '@/utils';
+import {required} from './utils';
 
 const LINKING_ERROR =
   `The package 'react-native-alarm-module' doesn't seem to be linked. Make sure: \n\n` +
