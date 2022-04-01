@@ -20,6 +20,7 @@ const AlarmModule = (
 ) as AlarmModuleInterface;
 export interface AlarmModuleInterface {
   setAlarmClock(taskName: string, isoDateTime: string): void;
+  setExact(taskName: string, isoDateTime: string, wakeup: boolean): void;
   setAndAllowWhileIdle(
     taskName: string,
     isoDateTime: string,
@@ -30,7 +31,6 @@ export interface AlarmModuleInterface {
     isoDateTime: string,
     wakeup: boolean,
   ): void;
-  setExact(taskName: string, isoDateTime: string, wakeup: boolean): void;
 }
 
 export const {
