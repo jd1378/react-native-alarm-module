@@ -7,7 +7,7 @@ buildscript {
         }
 
         dependencies {
-            classpath 'com.android.tools.build:gradle:3.5.3'
+            classpath 'com.android.tools.build:gradle:4.2.2'
         }
     }
 }
@@ -19,13 +19,14 @@ def safeExtGet(prop, fallback) {
 }
 
 android {
-    compileSdkVersion safeExtGet('AlarmModule_compileSdkVersion', 29)
+    compileSdkVersion safeExtGet('AlarmModule_compileSdkVersion', 30)
     defaultConfig {
-        minSdkVersion safeExtGet('AlarmModule_minSdkVersion', 16)
-        targetSdkVersion safeExtGet('AlarmModule_targetSdkVersion', 29)
+        minSdkVersion safeExtGet('AlarmModule_minSdkVersion', 21)
+        targetSdkVersion safeExtGet('AlarmModule_targetSdkVersion', 30)
         versionCode 1
         versionName "1.0"
-
+        // for desugaring
+        multiDexEnabled true
     }
 
     buildTypes {
@@ -37,6 +38,8 @@ android {
         disable 'GradleCompatible'
     }
     compileOptions {
+        coreLibraryDesugaringEnabled = true
+
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -56,4 +59,5 @@ repositories {
 dependencies {
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
 }
