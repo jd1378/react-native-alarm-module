@@ -35,8 +35,11 @@
   },
   "keywords": [
     "react-native",
-    "ios",
-    "android"
+    "android",
+    "alarm",
+    "set-alarm",
+    "set-task",
+    "schedule"
   ],
   "repository": "https://github.com/jd1378/react-native-alarm-module",
   "author": "Javad Mnjd <javad.mnjd@hotmail.com> (https://github.com/jd1378)",
