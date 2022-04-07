@@ -11,7 +11,7 @@ export default function App() {
     setAlarm({
       taskName: 'ShowToastTask',
       isoDateTime: newDate.toISOString(),
-      type: 'setExactAndAllowWhileIdle',
+      type: 'setAlarmClock',
       allowedInForeground: true,
       extra: 'something extra',
     });

@@ -33,7 +33,7 @@ export default function App() {
     setAlarm({
       taskName: 'ShowToastTask', // required
       isoDateTime: newDate.toISOString(), // required
-      type: 'setExactAndAllowWhileIdle', // optional
+      type: 'setAlarmClock', // optional
       allowedInForeground: true, // optional 
       wakeup: true, // optional
       extra: 'something extra', // optional
@@ -67,6 +67,16 @@ export default function App() {
 ```
 
 ## Notes
+
+### Alarm fired in background
+
+Currently you cannot launch your app when the alarm is fired and your app is not in foreground in newer Android versions due to the newly added limitations.
+
+### `setAlarmClock` type for android
+
+When `setAlarmClock` type is used to set an alarm on Android, this library tries to launch your application if the clock is touched. If the needed class is not found, it simply won't do anything if the clock is touched.
+
+When you want to handle the intent, you have to use `subscribeToOnNewIntent` method. remember to call `.remove()` when you are done with it. To handle the *launch intent* from the alarm clock icon, you have to handle the event early in your app or you will miss it.
 
 ### Canceling an alarm
 

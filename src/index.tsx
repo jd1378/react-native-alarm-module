@@ -1,4 +1,4 @@
-import {NativeModules, Platform} from 'react-native';
+import {NativeEventEmitter, NativeModules, Platform} from 'react-native';
 import {required} from './utils';
 
 const LINKING_ERROR =
@@ -38,8 +38,12 @@ export type AlarmOptions = {
   taskName: string;
   /** ISO 8601 formatted date time string. js provides `.toISOString()` on `Date` instance.  */
   isoDateTime: string;
-  /** **ANDROID:** the type of alarm. Defaults to `'setAndAllowWhileIdle'`  */
-  type?: 'setExact' | 'setExactAndAllowWhileIdle' | 'setAndAllowWhileIdle';
+  /** **ANDROID:** the type of alarm. Defaults to `'setAlarmClock'`  */
+  type?:
+    | 'setAlarmClock'
+    | 'setExact'
+    | 'setExactAndAllowWhileIdle'
+    | 'setAndAllowWhileIdle';
   /** **ANDROID:** Should this alarm wake up device ? Uses `RTC_WAKEUP` if true, `RTC` if false */
   wakeup?: boolean;
   /** **ANDROID:** should this task acquire wake wock ? */
@@ -59,7 +63,7 @@ export function setAlarm(options: AlarmOptions): void {
   const {
     taskName,
     isoDateTime,
-    type = 'setAndAllowWhileIdle',
+    type = 'setAlarmClock',
     wakeup = false,
     keepAwake = false,
     allowedInForeground = false,
@@ -98,4 +102,23 @@ export type TaskArgs = {
   extra: string;
 };
 
-export default AlarmModule;
+const alarmModuleEmitter = new NativeEventEmitter(AlarmModule as any);
+
+/**
+ * adds the handler to call when user touches alarm clock icon in status bar.
+ * **ANDROID only**.
+ * Don't forget to call `.remove()` on returned subscription on `componentWillUnmount` or related functions to prevent leak.
+ *
+ * Calls your handler with intent's arguments
+ *  */
+export function subscribeToOnNewIntent(
+  handler: (intentArgs: Record<string, unknown> | null) => void,
+) {
+  return alarmModuleEmitter.addListener('onNewIntent', handler);
+}
+
+export default {
+  setAlarm,
+  cancelAlarm,
+  NativeModule: AlarmModule,
+};
