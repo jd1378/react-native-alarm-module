@@ -19,10 +19,10 @@ def safeExtGet(prop, fallback) {
 }
 
 android {
-    compileSdkVersion safeExtGet('AlarmModule_compileSdkVersion', 30)
+    compileSdkVersion safeExtGet('compileSdkVersion', 31)
     defaultConfig {
-        minSdkVersion safeExtGet('AlarmModule_minSdkVersion', 21)
-        targetSdkVersion safeExtGet('AlarmModule_targetSdkVersion', 30)
+        minSdkVersion safeExtGet('minSdkVersion', 21)
+        targetSdkVersion safeExtGet('targetSdkVersion', 31)
         versionCode 1
         versionName "1.0"
         // for desugaring
