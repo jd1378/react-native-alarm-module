@@ -12,7 +12,9 @@ export default function App() {
       taskName: 'ShowToastTask',
       isoDateTime: newDate.toISOString(),
       type: 'setAlarmClock',
-      allowedInForeground: true,
+      allowedInForeground: false,
+      keepAwake: false,
+      wakeup: false,
       extra: 'something extra',
     });
     ToastAndroid.show(
