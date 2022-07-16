@@ -106,12 +106,11 @@
     "plugins": {
       "@release-it/conventional-changelog": {
         "preset": "angular",
-        "releaseRules": [
-          {
-            "type": "*!",
-            "release": "major"
-          }
-        ]
+        "config": {
+          "types":[
+            { "type": "*!", "section": "BREAKING CHANGES" }
+          ]
+        }
       }
     }
   }
