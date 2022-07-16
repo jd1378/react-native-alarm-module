@@ -32,7 +32,7 @@ export default function App() {
 
     setAlarm({
       taskName: 'ShowToastTask', // required
-      isoDateTime: newDate.toISOString(), // required
+      timestamp: newDate.valueOf(), // required
       type: 'setAlarmClock', // optional
       allowedInForeground: true, // optional 
       wakeup: true, // optional

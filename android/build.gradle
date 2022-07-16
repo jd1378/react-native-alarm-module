@@ -2,12 +2,17 @@ buildscript {
     if (project == rootProject) {
         repositories {
             google()
-            mavenCentral()
-            jcenter()
+            mavenCentral {
+                // We don't want to fetch react-native from Maven Central as there are
+                // older versions over there.
+                content {
+                    excludeGroup "com.facebook.react"
+                }
+            }
         }
 
         dependencies {
-            classpath 'com.android.tools.build:gradle:4.2.2'
+            classpath("com.android.tools.build:gradle:7.0.4")
         }
     }
 }
@@ -25,8 +30,6 @@ android {
         targetSdkVersion safeExtGet('targetSdkVersion', 31)
         versionCode 1
         versionName "1.0"
-        // for desugaring
-        multiDexEnabled true
     }
 
     buildTypes {
@@ -34,14 +37,9 @@ android {
             minifyEnabled false
         }
     }
+
     lintOptions {
         disable 'GradleCompatible'
-    }
-    compileOptions {
-        coreLibraryDesugaringEnabled = true
-
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
@@ -52,12 +50,16 @@ repositories {
         url("$rootDir/../node_modules/react-native/android")
     }
     google()
-    mavenCentral()
-    jcenter()
+    mavenCentral {
+        // We don't want to fetch react-native from Maven Central as there are
+        // older versions over there.
+        content {
+            excludeGroup "com.facebook.react"
+        }
+    }
 }
 
 dependencies {
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
 }

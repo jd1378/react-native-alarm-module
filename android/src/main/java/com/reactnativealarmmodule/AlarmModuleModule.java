@@ -18,7 +18,6 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.module.annotations.ReactModule;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
-import java.time.OffsetDateTime;
 
 @ReactModule(name = AlarmModuleModule.NAME)
 public class AlarmModuleModule extends ReactContextBaseJavaModule
@@ -55,7 +54,7 @@ public class AlarmModuleModule extends ReactContextBaseJavaModule
   @ReactMethod
   public void setAlarm(
       String taskName,
-      String isoDateTime,
+      String epochMilli,
       String type,
       boolean wakeup,
       boolean keepAwake,
@@ -66,7 +65,7 @@ public class AlarmModuleModule extends ReactContextBaseJavaModule
       extra = "";
     }
 
-    long timeEpochMilli = OffsetDateTime.parse(isoDateTime).toInstant().toEpochMilli();
+    long timeEpochMilli = Long.parseLong(epochMilli);
     AlarmManager alarmManager = this.getAlarmManager();
 
     PendingIntent pendingIntent =
@@ -135,10 +134,9 @@ public class AlarmModuleModule extends ReactContextBaseJavaModule
   }
 
   @ReactMethod
-  public void cancelAlarm(String taskName, String isoDateTime) {
-    long timeEpochMilli = OffsetDateTime.parse(isoDateTime).toInstant().toEpochMilli();
-    String fireDate = Long.toString(timeEpochMilli);
-    int requestCode = this.createRequestCode(fireDate);
+  public void cancelAlarm(String taskName, String epochMilli) {
+    long timeEpochMilli = Long.parseLong(epochMilli);
+    int requestCode = this.createRequestCode(epochMilli);
     Intent intent = new Intent(this.getReactApplicationContext(), AlarmReceiver.class);
 
     this.getAlarmManager()
@@ -191,6 +189,7 @@ public class AlarmModuleModule extends ReactContextBaseJavaModule
       if (bundle == null) {
         bundle = Bundle.EMPTY;
       }
+      bundle.remove("profile"); // fix for xiaomi
       WritableMap map = Arguments.fromBundle(bundle);
 
       this.getReactApplicationContext()

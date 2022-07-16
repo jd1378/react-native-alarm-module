@@ -9,6 +9,6 @@ export function required(obj: unknown, key: string) {
     !(obj as Record<string, unknown>)[key] &&
     (obj as Record<string, unknown>)[key] !== false
   ) {
-    throw new Error("'${key}' is required.");
+    throw new Error(`'${key}' is required.`);
   }
 }

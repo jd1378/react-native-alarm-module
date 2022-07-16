@@ -23,21 +23,21 @@ const AlarmModule = (
 interface AlarmModuleInterface {
   setAlarm(
     taskName: string,
-    isoDateTime: string,
+    timestamp: string,
     type: string,
     wakeup: boolean,
     keepAwake: boolean,
     allowedInForeground: boolean,
     extra: string,
   ): void;
-  cancelAlarm(taskName: string, isoDateTime: string): void;
+  cancelAlarm(taskName: string, timestamp: string): void;
 }
 
 export type AlarmOptions = {
   /** Task name that is registered using AppRegistry. */
   taskName: string;
-  /** ISO 8601 formatted date time string. js provides `.toISOString()` on `Date` instance.  */
-  isoDateTime: string;
+  /** the number of milliseconds since the epoch of 1970-01-01T00:00:00Z */
+  timestamp: number;
   /** **ANDROID:** the type of alarm. Defaults to `'setAlarmClock'`  */
   type?:
     | 'setAlarmClock'
@@ -59,10 +59,10 @@ export function setAlarm(options: AlarmOptions): void {
     throw new Error('AlarmOptions is required.');
   }
   required(options, 'taskName');
-  required(options, 'isoDateTime');
+  required(options, 'timestamp');
   const {
     taskName,
-    isoDateTime,
+    timestamp,
     type = 'setAlarmClock',
     wakeup = false,
     keepAwake = false,
@@ -72,7 +72,7 @@ export function setAlarm(options: AlarmOptions): void {
 
   AlarmModule.setAlarm(
     taskName,
-    isoDateTime,
+    timestamp.toString(),
     type,
     wakeup,
     keepAwake,
@@ -82,16 +82,15 @@ export function setAlarm(options: AlarmOptions): void {
 }
 
 export function cancelAlarm(
-  options: Pick<AlarmOptions, 'taskName' | 'isoDateTime'>,
+  options: Pick<AlarmOptions, 'taskName' | 'timestamp'>,
 ): void {
   if (!options) {
     throw new Error('AlarmOptions is required.');
   }
   required(options, 'taskName');
-  required(options, 'isoDateTime');
-  const {taskName, isoDateTime} = options;
-
-  AlarmModule.cancelAlarm(taskName, isoDateTime);
+  required(options, 'timestamp');
+  const {taskName, timestamp} = options;
+  AlarmModule.cancelAlarm(taskName, timestamp.toString());
 }
 
 export type TaskArgs = {

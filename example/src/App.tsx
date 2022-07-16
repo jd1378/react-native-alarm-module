@@ -10,9 +10,9 @@ export default function App() {
     setLastDate(newDate);
     setAlarm({
       taskName: 'ShowToastTask',
-      isoDateTime: newDate.toISOString(),
+      timestamp: newDate.valueOf(),
       type: 'setAlarmClock',
-      allowedInForeground: false,
+      allowedInForeground: true,
       keepAwake: false,
       wakeup: false,
       extra: 'something extra',
@@ -26,7 +26,7 @@ export default function App() {
   const cancel = useCallback(() => {
     cancelAlarm({
       taskName: 'ShowToastTask',
-      isoDateTime: lastDate.toISOString(),
+      timestamp: lastDate.valueOf(),
     });
     ToastAndroid.show(
       `alarm cancelled for ${lastDate.toISOString()}`,
