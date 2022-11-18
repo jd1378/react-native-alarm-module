@@ -21,7 +21,10 @@ yarn add react-native-alarm-module
 ```js
 // setAlarmClock, setExact, setAndAllowWhileIdle, setExactAndAllowWhileIdle
 import {setAlarm, cancelAlarm} from 'react-native-alarm-module';
-import {View, Button, ToastAndroid} from 'react-native';
+import {View, Button, ToastAndroid, AppRegistry} from 'react-native';
+
+// You have to register the task you would like executed as a headless task
+AppRegistry.registerHeadlessTask('ShowToastTask', () => () => ToastAndroid.show('Alarm toast!', ToastAndroid.SHORT));
 
 export default function App() {
   const [lastDate, setLastDate] = useState(new Date(Date.now() + 5 * 1000));
@@ -48,7 +51,7 @@ export default function App() {
   const cancel = useCallback(() => {
     cancelAlarm({
       taskName: 'ShowToastTask',
-      isoDateTime: lastDate.toISOString(),
+      timestamp: lastDate.valueOf(),
     });
     ToastAndroid.show(
       `alarm cancelled for ${lastDate.toISOString()}`,
@@ -80,7 +83,7 @@ When you want to handle the intent, you have to use `subscribeToOnNewIntent` met
 
 ### Canceling an alarm
 
-`cancelAlarm` Uses your task name and the ISO time the alarm was set to fire to cancel the alarm.
+`cancelAlarm` Uses your task name and the timestamp value the alarm was set to fire to cancel the alarm.
 it uses the time in seconds without the first digit as the request code under the hood to create a pending intent to cancel the alarm.
 
 ### RTC_WAKEUP
