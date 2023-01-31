@@ -12,6 +12,7 @@ import androidx.core.app.AlarmManagerCompat;
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.LifecycleEventListener;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
@@ -59,89 +60,99 @@ public class AlarmModuleModule extends ReactContextBaseJavaModule
       boolean wakeup,
       boolean keepAwake,
       boolean allowedInForeground,
-      String extra) {
+      String extra,
+      final Promise promise) {
 
-    if (extra == null) {
-      extra = "";
-    }
+    try {
+      if (extra == null) {
+        extra = "";
+      }
 
-    long timeEpochMilli = Long.parseLong(epochMilli);
-    AlarmManager alarmManager = this.getAlarmManager();
+      long timeEpochMilli = Long.parseLong(epochMilli);
+      AlarmManager alarmManager = this.getAlarmManager();
 
-    PendingIntent pendingIntent =
+      PendingIntent pendingIntent =
         this.createPendingIntentForAlarm(
-            taskName, timeEpochMilli, wakeup, keepAwake, allowedInForeground, extra);
+          taskName, timeEpochMilli, wakeup, keepAwake, allowedInForeground, extra);
 
-    if (type == null) {
-      type = "setAndAllowWhileIdle";
-    }
+      if (type == null) {
+        type = "setAndAllowWhileIdle";
+      }
 
-    switch (type) {
-      case "setAlarmClock":
-        Class<?> mainActivity;
-        Intent showIntent = null;
+      switch (type) {
+        case "setAlarmClock":
+          Class<?> mainActivity;
+          Intent showIntent = null;
 
-        try {
-          String packageName = this.getReactApplicationContext().getPackageName();
-          Intent launchIntent =
+          try {
+            String packageName = this.getReactApplicationContext().getPackageName();
+            Intent launchIntent =
               this.getReactApplicationContext()
-                  .getPackageManager()
-                  .getLaunchIntentForPackage(packageName);
-          String className = launchIntent.getComponent().getClassName();
-          mainActivity = Class.forName(className);
-          showIntent = new Intent(this.getReactApplicationContext(), mainActivity);
-          showIntent.putExtra("extra", extra);
-          showIntent.putExtra("fromAlarmModule", true);
-        } catch (Exception e) {
-          mainActivity = null;
-          showIntent = new Intent();
-        }
+                .getPackageManager()
+                .getLaunchIntentForPackage(packageName);
+            String className = launchIntent.getComponent().getClassName();
+            mainActivity = Class.forName(className);
+            showIntent = new Intent(this.getReactApplicationContext(), mainActivity);
+            showIntent.putExtra("extra", extra);
+            showIntent.putExtra("fromAlarmModule", true);
+          } catch (Exception e) {
+            mainActivity = null;
+            showIntent = new Intent();
+          }
 
-        int mutabilityFlag = PendingIntent.FLAG_UPDATE_CURRENT;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-          mutabilityFlag = PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT;
-        }
-        PendingIntent pendingShowIntent =
+          int mutabilityFlag = PendingIntent.FLAG_UPDATE_CURRENT;
+          if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            mutabilityFlag = PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT;
+          }
+          PendingIntent pendingShowIntent =
             PendingIntent.getActivity(
-                this.getReactApplicationContext(),
-                this.createRequestCode(Long.toString(timeEpochMilli)),
-                showIntent,
-                mutabilityFlag);
-        AlarmManagerCompat.setAlarmClock(
+              this.getReactApplicationContext(),
+              this.createRequestCode(Long.toString(timeEpochMilli)),
+              showIntent,
+              mutabilityFlag);
+          AlarmManagerCompat.setAlarmClock(
             alarmManager, timeEpochMilli, pendingShowIntent, pendingIntent);
-        break;
-      case "setExact":
-        AlarmManagerCompat.setExact(
+          break;
+        case "setExact":
+          AlarmManagerCompat.setExact(
             alarmManager,
             wakeup ? AlarmManager.RTC_WAKEUP : AlarmManager.RTC,
             timeEpochMilli,
             pendingIntent);
-      case "setExactAndAllowWhileIdle":
-        AlarmManagerCompat.setExactAndAllowWhileIdle(
+        case "setExactAndAllowWhileIdle":
+          AlarmManagerCompat.setExactAndAllowWhileIdle(
             alarmManager,
             wakeup ? AlarmManager.RTC_WAKEUP : AlarmManager.RTC,
             timeEpochMilli,
             pendingIntent);
-      default:
-      case "setAndAllowWhileIdle":
-        AlarmManagerCompat.setAndAllowWhileIdle(
+        default:
+        case "setAndAllowWhileIdle":
+          AlarmManagerCompat.setAndAllowWhileIdle(
             alarmManager,
             wakeup ? AlarmManager.RTC_WAKEUP : AlarmManager.RTC,
             timeEpochMilli,
             pendingIntent);
-        break;
+          break;
+      }
+      promise.resolve(null);
+    } catch (Exception e) {
+      promise.reject(e);
     }
+
   }
 
   @ReactMethod
-  public void cancelAlarm(String taskName, String epochMilli) {
-    long timeEpochMilli = Long.parseLong(epochMilli);
-    int requestCode = this.createRequestCode(epochMilli);
-    Intent intent = new Intent(this.getReactApplicationContext(), AlarmReceiver.class);
+  public void cancelAlarm(String taskName, String epochMilli, Promise promise) {
+    try {
+      long timeEpochMilli = Long.parseLong(epochMilli);
 
-    this.getAlarmManager()
+      this.getAlarmManager()
         .cancel(
-            this.createPendingIntentForAlarm(taskName, timeEpochMilli, false, false, false, ""));
+          this.createPendingIntentForAlarm(taskName, timeEpochMilli, false, false, false, ""));
+      promise.resolve(null);
+    } catch (Exception e) {
+      promise.reject(e);
+    }
   }
 
   private PendingIntent createPendingIntentForAlarm(

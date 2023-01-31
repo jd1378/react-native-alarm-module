@@ -29,8 +29,8 @@ interface AlarmModuleInterface {
     keepAwake: boolean,
     allowedInForeground: boolean,
     extra: string,
-  ): void;
-  cancelAlarm(taskName: string, timestamp: string): void;
+  ): Promise<void>;
+  cancelAlarm(taskName: string, timestamp: string): Promise<void>;
 }
 
 export type AlarmOptions = {
@@ -54,7 +54,7 @@ export type AlarmOptions = {
   extra?: string;
 };
 
-export function setAlarm(options: AlarmOptions): void {
+export async function setAlarm(options: AlarmOptions): Promise<void> {
   if (!options) {
     throw new Error('AlarmOptions is required.');
   }
@@ -70,7 +70,7 @@ export function setAlarm(options: AlarmOptions): void {
     extra = '',
   } = options;
 
-  AlarmModule.setAlarm(
+  await AlarmModule.setAlarm(
     taskName,
     timestamp.toString(),
     type,
@@ -81,16 +81,16 @@ export function setAlarm(options: AlarmOptions): void {
   );
 }
 
-export function cancelAlarm(
+export async function cancelAlarm(
   options: Pick<AlarmOptions, 'taskName' | 'timestamp'>,
-): void {
+): Promise<void> {
   if (!options) {
     throw new Error('AlarmOptions is required.');
   }
   required(options, 'taskName');
   required(options, 'timestamp');
   const {taskName, timestamp} = options;
-  AlarmModule.cancelAlarm(taskName, timestamp.toString());
+  await AlarmModule.cancelAlarm(taskName, timestamp.toString());
 }
 
 export type TaskArgs = {
