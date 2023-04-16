@@ -1,5 +1,9 @@
 # react-native-alarm-module
 
+**NO LONGER GETTING UPDATES, Do not use.** this module never did what I expected it to do. It won't run your app's tasks when in background. there's probably a solution, but I'm not willing to update this.
+
+--------------
+
 A native module for scheduling alarms. the main aim is to execute a headless js task from a set alarm. this was needed for executing a time critical task.
 
 ## Supported Platforms
